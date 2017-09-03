@@ -54,7 +54,7 @@ export default class Welcome extends Component {
     this.setState({
       grocery: arrayGrocery
     })
-    let array = [{readOnly: true, value: length}, {value: this.groceryValue(length), component: this.customerComponent(length)}, {value: 0.3}]
+    let array = [{readOnly: true, value: length}, {value: this.groceryValue(length), component: this.customerComponent(length)}, {value: this.profitValue(length), component: this.customerProfitComponent(length)}]
     this.state.grid.push(array)
     console.log(this.state.grid)
   }
@@ -75,6 +75,17 @@ export default class Welcome extends Component {
     // }
   }
 
+  profitValue (id) {
+    let idVal = ''
+    for (var i = 0; i < this.state.grocery.length; i++) {
+      if (this.state.grocery[i].id === id) {
+        idVal = `${this.state.grocery[i].profit}`
+      }
+    }
+    return idVal || ''
+  }
+
+
   handleInputChange (id, evt) {
     let val = evt.target.value
     let array = this.state.grocery
@@ -93,6 +104,31 @@ export default class Welcome extends Component {
     this.setState({grocery: array})
     console.log(this.state.grocery)
 
+  }
+
+  handleInputProfitChange (id, evt) {
+    let val = evt.target.value
+    let array = this.state.grocery
+    let number = 0
+    for (var i = 0; i < this.state.grocery.length; i++) {
+      if (this.state.grocery[i].id === id) {
+        array[i].profit = val
+        number = i
+      }
+    }
+    console.log(number)
+    let arrayGrid = this.state.grid
+
+    arrayGrid[number + 2][2].value = val
+    this.setState({grid: arrayGrid})
+    this.setState({grocery: array})
+    console.log(this.state.grocery)
+
+  }
+
+  customerProfitComponent (id) {
+    // return 'test'
+    return <input type="number" step="0.01" value={this.state && this.state.grocery[id]} onChange={this.handleInputProfitChange.bind(this, id)} />
   }
 
   customerComponent (id) {
